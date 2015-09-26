@@ -1,2 +1,2 @@
 Flask
-Pattern
+Pattern==2.6
