@@ -37,8 +37,8 @@ class SpellChecker:
     candidates = self.known([word]) or self.known(self.edits1(word)) or self.known_edits2(word) or [word]
     return max(candidates, key=self.NWORDS.get)
 
-spell_checker = SpellChecker()
-spell_checker.train("training_files/words_and_occurrences_small.txt")
+# spell_checker = SpellChecker()
+# spell_checker.train("training_files/words_and_occurrences_small.txt")
 
-print spell_checker.correct("hla")
-print spell_checker.correct("hlay")
+# print spell_checker.correct("hla")
+# print spell_checker.correct("hlay")
