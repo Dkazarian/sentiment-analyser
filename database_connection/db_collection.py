@@ -1,0 +1,22 @@
+from database_connector import DatabaseConnector
+
+class DbCollection:
+  collection = None
+
+  @classmethod
+  def db(self):
+    return DatabaseConnector.current().db
+
+  @classmethod
+  def collection_name(self):
+    raise NotImplementedError
+
+  @classmethod
+  def get_collection(self):
+    if self.collection is None:
+      collection = self.db()[self.collection_name()]
+    return collection
+
+  @classmethod
+  def insert(self, word):
+    self.get_collection().insert(word)
