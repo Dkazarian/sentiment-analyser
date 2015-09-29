@@ -20,3 +20,7 @@ class DbCollection:
   @classmethod
   def insert(self, word):
     self.get_collection().insert(word)
+
+  @classmethod
+  def all(self):
+    return self.get_collection().find()
