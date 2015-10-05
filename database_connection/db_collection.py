@@ -24,3 +24,7 @@ class DbCollection:
   @classmethod
   def all(self):
     return self.get_collection().find()
+
+  @classmethod
+  def find_one(self, query):
+    return self.get_collection().find_one(query)

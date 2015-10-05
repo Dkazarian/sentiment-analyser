@@ -3,7 +3,6 @@
 #from pdb import set_trace as bp
 from pattern.es import parsetree
 from math import fabs
-from dummy_classifier import DummyClassifier
 
 class Analyser(object):
 
@@ -51,7 +50,6 @@ class Analyser(object):
         word_value *= self.modifiers[0].modifier
         for modifier in self.modifiers[1:]:
           word_value *= abs(modifier.modifier)
-
       return word_value
            
     def clear_modifiers(self):
