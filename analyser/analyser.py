@@ -1,84 +1,61 @@
 #!/usr/bin/python
 # coding: UTF-8 
-from pdb import set_trace as bp
+#from pdb import set_trace as bp
 from pattern.es import parsetree
-import logging
-import sys
 from math import fabs
+from dummy_classyfier import DummyClassifier
 
 class Analyser(object):
 
-    def __init__(self):
-  
-      self.__log_setup()
-      self.__db_setup()
+    def __init__(self, classifier):
+      self.classifier = classifier
       return
 
     def process(self, text):
-      tree = parsetree(text, relations=True, lemmata=True)
-      self.logger.debug("TREE: %s\n", tree)
-      value = 0
 
-      #TODO: Actualmente no tiene en cuenta la jerarquía.
-      # - Agregar sentence_value y chunk_value
-      # - Un modificador puede afectar todo un chunk
-      # - En algunas oraciones el objeto directo me lo tira afuera del predicado. No se si es asi o es un error. Considerarlo y parchearlo.
-      # - A veces un modificador de un chunk me queda adentro del anterior. Suponer que si un modificador es la última palabra del chunk éste afecta al siguiente.
-      # - Ver cómo stackear modifiers (por ahora los estoy multiplicando entre sí)
-      # - Integrar con Mongo y cargar palabras del excel
+      sentences = self.parse(text)
+      text_value = 0
 
-      for sentence in tree:
-        self.reset_modifier()
+      for sentence in sentences:
+        sentence_value = 0
+        self.clear_modifiers()
+        for word in sentence:            
+          if self.word_has_value(word):
+            sentence_value += self.apply_modifiers(word)
+            self.clear_modifiers()           
+          elif self.word_is_modifier(word):
+            self.add_modifier(word)
 
-        for chunk in sentence.chunks:
-          
-          #self.logger.debug("CHUNK %s", repr([chunk.type, chunk.relation, chunk.words])) 
-          
-          for word in chunk.words:
-            word_data = self.classify(word)
-            
-            if self.word_has_value(word_data):
-              value += self.apply_modifier(word_data)
-              self.reset_modifier()
+        text_value += sentence_value
+
+      return text_value
+
+    def parse(self, text):
+      p_tree = parsetree(text, relations=True, lemmata=True)
+      sentences = []
+      for p_sentence in p_tree:
+        sentence = []
+        for p_word in p_sentence.words:
+          sentence.append(self.classifier.classify(p_word))
+        sentences.append(sentence)
+      return sentences
+
+
+    def add_modifier(self, modifier):
+      self.modifiers.append(modifier)
+
+    def apply_modifiers(self, word_data):
+      word_value = self.word_value(word_data)
+
+      if self.modifiers:
+        word_value *= self.word_mod(self.modifiers[0])
+        for modifier in self.modifiers[1:]:
+          word_value *= abs(self.word_mod(modifier))
+
+      return word_value
            
-            elif self.word_is_modifier(word_data):
-              self.set_modifier(self.word_mod(word_data))
-    
-            self.logger.debug("acum: %s, next_mod: %s\n", value, self.current_mod)
-
-      return value
-
-
-    def classify(self, word):
-      #TODO: Obtener de mongo
-      if word.lemma == "bueno" or word.lemma == "bonito":
-        word_data = {'word': word.string, 'value': 1}
-      elif word.lemma == "malo":
-        word_data = {'word': word.string, 'value': -1}
-      elif word.string == "no":
-        word_data = {'word': word.string, 'mod':  -1}
-      elif word.string == "muy":
-        word_data = {'word': word.string, 'mod':  3}
-      else:
-        word_data = {'word': word.string}
-
-      self.logger.debug("\'%s\' value: %s mod: %s", word.string, self.word_value(word_data), self.word_mod(word_data))  
-
-      return word_data
-
-    def set_modifier(self, modifier):
-      if self.current_mod!=1:
-        word_mod = fabs(modifier)
-      self.current_mod *= modifier
-
-    def modifier_present(self):
-      return self.current_mod!=1
-
-    def apply_modifier(self, word_data):
-      return self.word_value(word_data)*self.current_mod 
-           
-    def reset_modifier(self):
-      self.current_mod = 1
+    def clear_modifiers(self):
+      self.modifiers = []
 
     def word_is_modifier(self, word_data):
       return self.word_mod(word_data)!= 1
@@ -92,20 +69,10 @@ class Analyser(object):
     def word_mod(self, word_data):
       return word_data.get("mod", 1)
 
-    def __log_setup(self):
-      self.logger = logging.getLogger()
-      self.logger.setLevel(logging.DEBUG)
-      ch = logging.StreamHandler(sys.stdout)
-      ch.setFormatter(logging.Formatter("\033[1;31m%s\033[1;0m" % '%(message)s'))
-      ch.setLevel(logging.DEBUG)
-      self.logger.addHandler(ch)
+      
 
+if __name__ == '__main__':
 
-    def __db_setup(self):
-      return
-
-
-
-
-an = Analyser()
-print an.process("La comida no es muy buena.")
+  cl = DummyClassifier()
+  an = Analyser(cl)
+  print an.process("La comida no es muy buena.")
