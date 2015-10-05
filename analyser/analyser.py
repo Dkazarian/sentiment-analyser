@@ -3,7 +3,7 @@
 #from pdb import set_trace as bp
 from pattern.es import parsetree
 from math import fabs
-from dummy_classyfier import DummyClassifier
+from dummy_classifier import DummyClassifier
 
 class Analyser(object):
 
@@ -19,12 +19,12 @@ class Analyser(object):
       for sentence in sentences:
         sentence_value = 0
         self.clear_modifiers()
-        for word in sentence:            
-          if self.word_has_value(word):
-            sentence_value += self.apply_modifiers(word)
+        for s_word in sentence:            
+          if s_word.has_polarity():
+            sentence_value += self.apply_modifiers(s_word)
             self.clear_modifiers()           
-          elif self.word_is_modifier(word):
-            self.add_modifier(word)
+          elif s_word.is_modifier():
+            self.add_modifier(s_word)
 
         text_value += sentence_value
 
@@ -44,35 +44,18 @@ class Analyser(object):
     def add_modifier(self, modifier):
       self.modifiers.append(modifier)
 
-    def apply_modifiers(self, word_data):
-      word_value = self.word_value(word_data)
+    def apply_modifiers(self, s_word):
+      word_value = s_word.polarity
 
       if self.modifiers:
-        word_value *= self.word_mod(self.modifiers[0])
+        word_value *= self.modifiers[0].modifier
         for modifier in self.modifiers[1:]:
-          word_value *= abs(self.word_mod(modifier))
+          word_value *= abs(modifier.modifier)
 
       return word_value
            
     def clear_modifiers(self):
       self.modifiers = []
 
-    def word_is_modifier(self, word_data):
-      return self.word_mod(word_data)!= 1
-
-    def word_has_value(self, word_data):
-      return self.word_value(word_data)!=0
-
-    def word_value(self, word_data):
-      return word_data.get("value", 0)
-
-    def word_mod(self, word_data):
-      return word_data.get("mod", 1)
 
       
-
-if __name__ == '__main__':
-
-  cl = DummyClassifier()
-  an = Analyser(cl)
-  print an.process("La comida no es muy buena.")
