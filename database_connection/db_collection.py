@@ -1,5 +1,4 @@
 from database_connector import DatabaseConnector
-
 class DbCollection:
   collection = None
 
@@ -18,8 +17,8 @@ class DbCollection:
     return collection
 
   @classmethod
-  def insert(self, word):
-    self.get_collection().insert(word)
+  def insert(self, item):
+    self.get_collection().insert(item)
 
   @classmethod
   def all(self):

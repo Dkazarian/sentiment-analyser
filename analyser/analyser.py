@@ -3,11 +3,14 @@
 #from pdb import set_trace as bp
 from pattern.es import parsetree
 from math import fabs
+import logging
+import sys
 
 class Analyser(object):
 
-    def __init__(self, classifier):
+    def __init__(self, classifier, debug = False):
       self.classifier = classifier
+      self.__log_setup(debug)
       return
 
     def process(self, text):
@@ -18,7 +21,8 @@ class Analyser(object):
       for sentence in sentences:
         sentence_value = 0
         self.clear_modifiers()
-        for s_word in sentence:            
+        for s_word in sentence:  
+          self.logger.debug(s_word)         
           if s_word.has_polarity():
             sentence_value += self.apply_modifiers(s_word)
             self.clear_modifiers()           
@@ -56,4 +60,11 @@ class Analyser(object):
       self.modifiers = []
 
 
-      
+    def __log_setup(self, debug):
+      self.logger = logging.getLogger()
+      self.logger.setLevel(logging.DEBUG)
+      ch = logging.StreamHandler(sys.stdout)
+      ch.setFormatter(logging.Formatter("\033[1;31m%s\033[1;0m" % '%(message)s'))
+      if debug:
+        ch.setLevel(logging.DEBUG)
+      self.logger.addHandler(ch)

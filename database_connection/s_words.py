@@ -25,5 +25,14 @@ class SWords(DbCollection):
     else:
       return None
   
+  @classmethod
+  def insert_word(self, s_word):
+    word_doc = {"word": s_word.word}
+    if s_word.has_polarity():
+      word_doc["polarity"] = s_word.polarity
+    if s_word.is_modifier():
+      word_doc["modifier"] = s_word.modifier
+    self.insert(word_doc)
+
 
 
