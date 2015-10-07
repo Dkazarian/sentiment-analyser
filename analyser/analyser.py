@@ -61,10 +61,13 @@ class Analyser(object):
 
 
     def __log_setup(self, debug):
+      print debug
       self.logger = logging.getLogger()
       self.logger.setLevel(logging.DEBUG)
       ch = logging.StreamHandler(sys.stdout)
       ch.setFormatter(logging.Formatter("\033[1;31m%s\033[1;0m" % '%(message)s'))
       if debug:
         ch.setLevel(logging.DEBUG)
+      else:
+        ch.setLevel(logging.ERROR)
       self.logger.addHandler(ch)
