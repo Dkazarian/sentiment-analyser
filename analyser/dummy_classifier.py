@@ -11,5 +11,5 @@ class DummyClassifier(object):
     elif word.string == "muy":
       word_data = SWord(word.string, modifier=3)
     else:
-      word_data = SWord(word.string)
+      word_data = SWord(word.string, extra = word)
     return word_data

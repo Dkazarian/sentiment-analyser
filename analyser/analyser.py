@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # coding: UTF-8 
-#from pdb import set_trace as bp
+from pdb import set_trace as bp
 from pattern.es import parsetree
 from math import fabs
 import logging
@@ -21,16 +21,17 @@ class Analyser(object):
       for sentence in sentences:
         sentence_value = 0
         self.clear_modifiers()
+        
         for s_word in sentence:  
-          self.logger.debug(s_word)         
-          if s_word.has_polarity():
+          if s_word.has_polarity() and not self.ignore_word(s_word):
             sentence_value += self.apply_modifiers(s_word)
             self.clear_modifiers()           
           elif s_word.is_modifier():
             self.add_modifier(s_word)
-
+          
+          self.__log_step(s_word, sentence_value)     
         text_value += sentence_value
-
+        self.logger.debug("\nTotal oración: %.2f\n\n", sentence_value)
       return text_value
 
     def parse(self, text):
@@ -41,8 +42,13 @@ class Analyser(object):
         for p_word in p_sentence.words:
           sentence.append(self.classifier.classify(p_word))
         sentences.append(sentence)
+
       return sentences
 
+    def ignore_word(self, s_word):
+      return s_word.extra.chunk \
+        and not s_word.extra.chunk.role == "OBJ" \
+        and (s_word.extra.chunk.role == "SBJ" or s_word.extra.chunk.type == "NP")
 
     def add_modifier(self, modifier):
       self.modifiers.append(modifier)
@@ -61,7 +67,6 @@ class Analyser(object):
 
 
     def __log_setup(self, debug):
-      print debug
       self.logger = logging.getLogger()
       self.logger.setLevel(logging.DEBUG)
       ch = logging.StreamHandler(sys.stdout)
@@ -71,3 +76,14 @@ class Analyser(object):
       else:
         ch.setLevel(logging.ERROR)
       self.logger.addHandler(ch)
+
+    def __log_step(self, s_word, sentence_value):
+      self.logger.debug("===================")
+      self.logger.debug("\"%s\" [%s] [%s] [%s] [%s]", 
+            s_word.extra.string, 
+            s_word,
+            s_word.extra.type, 
+            s_word.extra.chunk.role if s_word.extra.chunk else None, 
+            s_word.extra.chunk.type if s_word.extra.chunk else None)    
+      self.logger.debug("Acumulado: %.2f", sentence_value)    
+      self.logger.debug("Modificadores: %s", map(lambda x: str(x), self.modifiers))   
