@@ -59,8 +59,8 @@ class SpellChecker:
     return set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
 
   def correct2(self, word):
-    edits_1 = self.edits1(word)
-    return self.known([word]) or DWords.most_common_known_word(edits_1) or DWords.most_common_known_word(self.edits2(edits_1)) or word
+    edits_1 = self.reject_by_rules(self.edits1(word))
+    return self.known([word]) or DWords.most_common_known_word(edits_1) or DWords.most_common_known_word(self.reject_by_rules(self.edits2(edits_1))) or word
 
   def flatten(self, l):
     return [item for sublist in l for item in sublist]
@@ -74,6 +74,7 @@ class SpellChecker:
 
   def reject_by_rules(self, words):
     wrongs = ['mv', 'np', 'nb']
+    wrongs.extend(list(triple for l in self.alphabet for triple in ["".join([l,l,l])]))
     not_rejected = []
     for word in words:
       if(not any(m for wrong in wrongs for m in [re.search(wrong, word)])):
