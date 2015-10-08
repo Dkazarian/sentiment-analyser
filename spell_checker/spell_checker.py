@@ -60,10 +60,10 @@ class SpellChecker:
 
   def correct2(self, word):
     edits_1 = self.edits1(word)
-    return DWords.most_common_known_word([word, edits_1, self.edits2(edits_1)]) or word
+    return self.known([word]) or DWords.most_common_known_word(edits_1) or DWords.most_common_known_word(self.edits2(edits_1)) or word
 
   def flatten(self, l):
-    [item for sublist in l for item in sublist]
+    return [item for sublist in l for item in sublist]
 
   def d_word_occurrences(self, word):
     d_word = DWords.find_word(word)
@@ -71,6 +71,15 @@ class SpellChecker:
       return 1
     else:
       return d_word.occurrences
+
+  def reject_by_rules(self, words):
+    wrongs = ['mv', 'np', 'nb']
+    not_rejected = []
+    for word in words:
+      if(not any(m for wrong in wrongs for m in [re.search(wrong, word)])):
+        not_rejected.append(word)
+    return not_rejected
+
 
 
 # spell_checker = SpellChecker()
