@@ -1,10 +1,10 @@
-from database_connector import DatabaseConnector
+from mongo_connector import MongoConnector
 class DbCollection:
   collection = None
 
   @classmethod
   def db(self):
-    return DatabaseConnector.current().db
+    return MongoConnector.current().db
 
   @classmethod
   def collection_name(self):

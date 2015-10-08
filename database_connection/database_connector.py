@@ -2,13 +2,19 @@ from pymongo import MongoClient;
 
 class DatabaseConnector:
   host = "localhost"
-  port = 27017
-  db_name = "sentiments_development"
   current_instance = None
 
   def __init__(self, host, port, db_name):
-    self.client = MongoClient(host, port)
-    self.db = self.client[db_name]
+    self.init_client(host, port)
+    self.init_db(db_name)
+
+  @classmethod
+  def init_client(self, host, port):
+    raise NotImplementedError
+
+  @classmethod
+  def init_db(self, db_name):
+    raise NotImplementedError
 
   @classmethod
   def current(self):
