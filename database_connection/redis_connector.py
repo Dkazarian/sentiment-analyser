@@ -1,18 +1,18 @@
-from pymongo import MongoClient;
+import redis
 from database_connector import DatabaseConnector;
 
-class MongoConnector(DatabaseConnector):
+class RedisConnector(DatabaseConnector):
   host = "localhost"
-  port = 27017
-  db_name = "sentiments_development"
+  port = 6379
+  db_name = 0
   current_instance = None
   client = None
   db = None
 
   @classmethod
   def init_client(self, host, port, db_name):
-    self.client = MongoClient(host, port)
+    self.client = redis.StrictRedis(host=host, port=port, db=db_name)
 
   @classmethod
   def init_db(self, db_name):
-    self.db = self.client[db_name]
+    self.db = self.client

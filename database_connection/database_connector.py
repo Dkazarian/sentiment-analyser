@@ -5,7 +5,7 @@ class DatabaseConnector:
   current_instance = None
 
   def __init__(self, host, port, db_name):
-    self.init_client(host, port)
+    self.init_client(host, port, db_name)
     self.init_db(db_name)
 
   @classmethod

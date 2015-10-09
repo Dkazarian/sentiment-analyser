@@ -1,7 +1,8 @@
 from db_collection import DbCollection
+from redis_connection import RedisConnection
 from models.d_word import DWord
 
-class DWords(DbCollection):
+class DWords(RedisConnection):
   collection = None
 
   @classmethod
@@ -10,17 +11,41 @@ class DWords(DbCollection):
 
   @classmethod
   def find_word(self, word):
-    database_word = self.find_one({"word": word})
+    database_word = self.find_one(word)
     if database_word:
       return DWord(word, database_word.get("occurrences"))
     else:
       return None
 
   @classmethod
-  def most_common_known_word(self, words):
-    words = list(words)
-    result = self.get_collection().find({"word": { "$in": words } } ).sort("occurrences", -1)
-    if result.count() > 0:
-      return result.next().get("word")
-    else:
-      None
+  def insert_word(self, d_word):
+    self.insert(d_word.word, d_word.to_h())
+
+  # @classmethod
+  # def most_common_known_word(self, words):
+  #   words = list(words)
+  #   result = self.get_collection().find({"word": { "$in": words } } ).sort("occurrences", -1)
+  #   if result.count() > 0:
+  #     return result.next().get("word")
+  #   else:
+  #     None
+
+
+  # @classmethod
+  # def most_common_known_word(self, words):
+  #   most_common_known_word = None
+  #   print "Looking most common known word"
+  #   for word in words:
+  #     result = self.find_one(word)
+  #     if(most_common_known_word is None and result is not None):
+  #       most_common_known_word = result
+  #     if(result is not None and most_common_known_word is not None):
+  #         most_common_known_word = max([result, most_common_known_word], key=lambda w: w.get('occurrences'))
+  #   if(most_common_known_word):
+  #     return most_common_known_word.get('word')
+  #   else:
+  #     return None
+
+
+
+
