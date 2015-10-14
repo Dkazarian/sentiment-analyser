@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+# coding: UTF-8
 import re, collections
 from database_connection.d_words import DWords
 from models.d_word import DWord
