@@ -7,7 +7,6 @@ class SpellChecker:
     self.NWORDS = collections.defaultdict(lambda: 1)
     self.alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
-  def _extract_words(self, text): return re.findall('[a-z]+', text.lower())
 
   def train_with_occurrences(self, file_name):
     f = file(file_name)
@@ -30,13 +29,15 @@ class SpellChecker:
     except ValueError:
       return False
 
-  def train(self, file_name):
-    features = self._extract_words(file(file_name).read())
-    model = collections.defaultdict(lambda: 1)
-    for f in features:
-        model[f] += 1
-    for word in model:
-      DWords.insert_word(DWord(word, occurrences=model[word]))
+  # def _extract_words(self, text): return re.findall('[a-z]+', text.lower())
+
+  # def train(self, file_name):
+  #   features = self._extract_words(file(file_name).read())
+  #   model = collections.defaultdict(lambda: 1)
+  #   for f in features:
+  #       model[f] += 1
+  #   for word in model:
+  #     DWords.insert_word(DWord(word, occurrences=model[word]))
 
   def edits1(self, word):
     splits     = [(word[:i], word[i:]) for i in range(len(word) + 1)]
@@ -44,7 +45,7 @@ class SpellChecker:
     transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
     replaces   = [a + c + b[1:] for a, b in splits for c in self.alphabet if b]
     inserts    = [a + c + b     for a, b in splits for c in self.alphabet]
-    return self.reject_by_rules(set(deletes + transposes + replaces + inserts))
+    return self.reject_by_rules(set(deletes + replaces + inserts))
 
   def known_edits2(self, word):
     return set(e2 for e1 in self.edits1(word) for e2 in self.edits1(e1) if DWords.find_word(e2))
@@ -60,20 +61,6 @@ class SpellChecker:
 
   def edits2(self, edits_1):
     return set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
-
-  # def correct2(self, word):
-  #   edits_1 = self.reject_by_rules(self.edits1(word))
-  #   return list(self.known([word]))[0] or DWords.most_common_known_word(edits_1) or DWords.most_common_known_word(self.reject_by_rules(self.edits2(edits_1))) or word
-
-  def flatten(self, l):
-    return [item for sublist in l for item in sublist]
-
-  def d_word_occurrences(self, word):
-    d_word = DWords.find_word(word)
-    if d_word is None:
-      return 1
-    else:
-      return d_word.occurrences
 
   def reject_by_rules(self, words):
     wrongs = ['mv', 'np', 'nb']
