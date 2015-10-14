@@ -13,7 +13,7 @@ class DWords(RedisConnection):
   def find_word(self, word):
     database_word = self.find_one(word)
     if database_word:
-      return DWord(word, database_word.get("occurrences"))
+      return DWord(word, occurrences= database_word.get("occurrences"), polarity= database_word.get("polarity"), modifier= database_word.get("modifier"))
     else:
       return None
 
