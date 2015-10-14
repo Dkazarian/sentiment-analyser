@@ -20,6 +20,10 @@ class DWords(RedisConnection):
   @classmethod
   def insert_word(self, d_word):
     self.insert(d_word.word, d_word.to_h())
+    # if not (d_word.has_polarity() or d_word.is_modifier()):
+    #   with open("polarity_pending.txt", "a") as f:
+    #     f.write(d_word.word+" ")
+    
 
   # @classmethod
   # def most_common_known_word(self, words):
