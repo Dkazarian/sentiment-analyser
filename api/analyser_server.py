@@ -21,6 +21,18 @@ def info():
     ]
   )
 
+@app.route("/analyse", methods=['POST'])
+def analyse():
+  opts = {
+    "classifier": request.args.get("classifier") or "redis" or "mongo",
+    "debug": request.args.get("debug") or False
+  }
+
+  return jsonify(
+    info="Running with classifier: " +
+    opts["classifier"] + " and debug mode is " +
+    ("on" if opts["debug"] else "off") + "."
+  )
 
 if __name__ == "__main__":
   app.run()
