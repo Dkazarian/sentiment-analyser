@@ -31,15 +31,15 @@ class SpellChecker:
     except ValueError:
       return False
 
-  # def _extract_words(self, text): return re.findall('[a-z]+', text.lower())
+  def _extract_words(self, text): return re.findall('[a-z]+', text.lower())
 
-  # def train(self, file_name):
-  #   features = self._extract_words(file(file_name).read())
-  #   model = collections.defaultdict(lambda: 1)
-  #   for f in features:
-  #       model[f] += 1
-  #   for word in model:
-  #     DWords.insert_word(DWord(word, occurrences=model[word]))
+  def train(self, file_name):
+    features = self._extract_words(file(file_name).read())
+    model = collections.defaultdict(lambda: 1)
+    for f in features:
+        model[f] += 1
+    for word in model:
+      DWords.insert_word(DWord(word, occurrences=model[word]))
 
   def edits1(self, word):
     splits     = [(word[:i], word[i:]) for i in range(len(word) + 1)]
