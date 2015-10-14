@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import re, collections
 from database_connection.d_words import DWords
 from models.d_word import DWord
@@ -5,7 +7,7 @@ from models.d_word import DWord
 class SpellChecker:
   def __init__(self):
     self.NWORDS = collections.defaultdict(lambda: 1)
-    self.alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    self.alphabet = 'aábcdeéfghiíjklmnoópqrstuúvwxyz'
 
 
   def train_with_occurrences(self, file_name):
