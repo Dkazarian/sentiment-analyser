@@ -23,9 +23,13 @@ def info():
 
 @app.route("/analyse", methods=['POST'])
 def analyse():
+  classifier = request.form.get("classifier")
+  if(classifier != None and classifier != "mongo" and classifier != "redis"):
+    classifier = None
+  debug = request.form.get("debug") is not None
   opts = {
-    "classifier": request.args.get("classifier") or "redis" or "mongo",
-    "debug": request.args.get("debug") or False
+    "classifier": classifier or "redis" or "mongo",
+    "debug": debug or False
   }
 
   return jsonify(
