@@ -44,7 +44,7 @@ def interactive_loader(file_name):
     d_words = []
 
     for word in word_group:
-      d_word = DWords.find_word(word.string) or DWord(word.string)
+      d_word = DWords.find_word(word.string.lower()) or DWord(word.string.lower())
       if not (d_word.has_polarity() or d_word.is_modifier()):
         d_words.append(d_word)
 
@@ -54,7 +54,7 @@ def interactive_loader(file_name):
 
     while len(options)!=len(d_words):
       print "\t".join(map((lambda w: w.string), word_group))
-      options = list(raw_input("0:neutral\t1:positive\t2: negative\t3:inversor\t5:minimizer\t6:maximizer\n")[:len(d_words)])
+      options = list(raw_input("0:neutral\t1:positive\t2: negative\t3:inversor\t5:minimizer\t6:maximizer\td:descartar\n")[:len(d_words)])
     
     for d_word in d_words:
       option = options.pop(0)
@@ -70,8 +70,10 @@ def interactive_loader(file_name):
         d_word.modifier = 0.5
       elif option == "6":
         d_word.modifier = 2
-      DWords.insert_word(d_word)
-      save_in_file(d_word)
+
+      if option!="d":
+        DWords.insert_word(d_word)
+        save_in_file(d_word)
     print "\n\n\n"
 
 def save_in_file(d_word):
