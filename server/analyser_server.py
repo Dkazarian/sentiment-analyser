@@ -2,6 +2,9 @@
 # coding: UTF-8
 import sys
 from flask import Flask, render_template, request, jsonify
+import threading
+import json
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
@@ -23,14 +26,25 @@ def info():
 
 @app.route("/analyse", methods=['POST'])
 def analyse():
-  classifier = request.form.get("classifier")
+  data = json.loads(json.dumps(request.get_json(force=True)))
+  classifier = data.get("classifier")
   if(classifier != None and classifier != "mongo" and classifier != "redis"):
     classifier = None
-  debug = request.form.get("debug") is not None
+  debug = data.get("debug") is not None
+  sentences = data.get("sentences")
+  url = data.get("respond_to")
+
   opts = {
     "classifier": classifier or "redis" or "mongo",
-    "debug": debug or False
+    "debug": debug or False,
+    "sentences": sentences or [],
+    "respond_to": url or ""
   }
+
+  print opts
+
+  thr = threading.Thread(target=AnalyserTask.perform, kwargs=opts)
+  thr.start()
 
   return jsonify(
     info="Running with classifier: " +

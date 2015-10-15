@@ -14,8 +14,8 @@ debug = len(sys.argv) == 3 and sys.argv[2]=="-debug"
 
 
 #cl = DummyClassifier()
-cl = RedisClassifier()
-#cl = MongoClassifier()
+# cl = RedisClassifier()
+cl = MongoClassifier()
 an = Analyser(cl, debug)
 result = an.process(sys.argv[1])
 print "%s (%s)" % ("Positivo" if result > 0 else "Negativo" if result < 0 else "Neutro", result)
