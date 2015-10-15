@@ -9,7 +9,6 @@ from database_connection.d_words import DWords
 from models.d_word import DWord
 from pattern.es import parsetree
 
-
 def load_modifiers(file_name):
   print "Loading modifiers from "+file_name
   load_polarity_or_modifier(file_name, "modifier")
@@ -53,7 +52,7 @@ def interactive_loader(file_name):
 
 
     while len(options)!=len(d_words):
-      print "\t".join(map((lambda w: w.string), word_group))
+      print "\t".join(map((lambda w: w.word), d_words))
       options = list(raw_input("0:neutral\t1:positive\t2: negative\t3:inversor\t5:minimizer\t6:maximizer\td:descartar\n")[:len(d_words)])
     
     for d_word in d_words:
