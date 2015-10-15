@@ -4,10 +4,10 @@ class DWord:
     if occurrences is None:
       self.occurrences = 1
     else:
-      self.occurrences = occurrences
+      self.occurrences = int(occurrences)
     self.extra = extra or ''
-    self.polarity = polarity
-    self.modifier = modifier
+    self.polarity = float(polarity) if polarity is not None else polarity
+    self.modifier = float(modifier) if modifier is not None else modifier
 
   def to_h(self):
     h = { "word": self.word, "occurrences": str(self.occurrences)}
