@@ -22,3 +22,8 @@ class DWord:
 
   def is_modifier(self):
     return self.modifier is not None
+
+  
+  def __str__(self):
+    s = "\"%s\" %s: %.2f" % (self.word, "M" if self.is_modifier() else "P", self.modifier or self.polarity or 0)
+    return s
