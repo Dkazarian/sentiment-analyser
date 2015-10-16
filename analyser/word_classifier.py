@@ -7,7 +7,10 @@ class WordClassifier(object):
     w_string = p_word.string.lower()
     w_lemma = p_word.lemma.lower()
 
-    word_data = self.find_word(w_string) or self.find_word(w_lemma)
+    if p_word.type in ["CD", ".", ",", ":", "(", ")", "SYM"]:
+      word_data = self.new_word(w_string)
+    else:  
+      word_data = self.find_word(w_string) or self.find_word(w_lemma)
 
     if word_data is None:
       word_data  = self.correct(w_string) or self.new_word(w_string)
