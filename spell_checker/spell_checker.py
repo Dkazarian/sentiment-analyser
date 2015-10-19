@@ -41,6 +41,7 @@ class SpellChecker:
     for word in model:
       DWords.insert_word(DWord(word, occurrences=model[word]))
 
+  #TODO: Agregar correción de tildes
   def edits1(self, word):
     splits     = [(word[:i], word[i:]) for i in range(len(word) + 1)]
     deletes    = [a + b[1:] for a, b in splits if b]
@@ -62,7 +63,7 @@ class SpellChecker:
     return max(candidates, key=lambda word: word.occurrences).word
 
   def edits2(self, edits_1):
-    return set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
+    return []#set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
 
   def reject_by_rules(self, words):
     wrongs = ['mv', 'np', 'nb']

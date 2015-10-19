@@ -18,7 +18,10 @@ class DWord:
     return h
 
   def has_polarity(self):
-    return self.polarity is not None
+    return self.polarity is not None 
+
+  def is_neutral(self):
+    return self.has_polarity() and self.polarity==0
 
   def is_modifier(self):
     return self.modifier is not None

@@ -1,3 +1,13 @@
 no -1
 muy 2
 super 2
+tan 2
+mucho 2
+sin -1
+más 2
+no -1
+ni -1
+poco 0.5
+bastante 2
+profundizará 2
+pierde -1

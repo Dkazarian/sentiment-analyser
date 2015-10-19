@@ -46,9 +46,9 @@ class Analyser(object):
       return sentences
 
     def ignore_word(self, s_word):
-      return s_word.extra.chunk \
-        and not s_word.extra.chunk.role == "OBJ" \
-        and (s_word.extra.chunk.role == "SBJ" or s_word.extra.chunk.type == "NP")
+      return s_word.is_neutral() #or (s_word.extra.chunk \
+      #  and not s_word.extra.chunk.role == "OBJ" \
+      #  and (s_word.extra.chunk.role == "SBJ" or s_word.extra.chunk.type == "NP"))
 
     def add_modifier(self, modifier):
       self.modifiers.append(modifier)
@@ -79,11 +79,25 @@ class Analyser(object):
 
     def __log_step(self, s_word, sentence_value):
       self.logger.debug("===================")
-      self.logger.debug("\"%s\" [%s] [%s] [%s] [%s]", 
-            s_word.extra.string, 
-            s_word,
-            s_word.extra.type, 
-            s_word.extra.chunk.role if s_word.extra.chunk else None, 
-            s_word.extra.chunk.type if s_word.extra.chunk else None)    
+      try:
+        self.logger.debug("\"%s\" [%s] [%s] [%s] [%s]", 
+          s_word.extra.string, 
+          s_word,
+          s_word.extra.type, 
+          s_word.extra.chunk.role if s_word.extra.chunk else None, 
+          s_word.extra.chunk.type if s_word.extra.chunk else None)   
+      except UnicodeEncodeError:
+        self.logger.debug("\"%s\" [%s] [%s] [%s] [%s]", 
+          s_word.extra.string, 
+          s_word.polarity,
+          s_word.extra.type, 
+          s_word.extra.chunk.role if s_word.extra.chunk else None, 
+          s_word.extra.chunk.type if s_word.extra.chunk else None)  
+       
       self.logger.debug("Acumulado: %.2f", sentence_value)    
-      self.logger.debug("Modificadores: %s", map(lambda x: str(x), self.modifiers))   
+
+      try:
+        self.logger.debug("Modificadores: %s", map(lambda x: str(x), self.modifiers))  
+      except UnicodeEncodeError:
+        self.logger.debug("Modificadores: %s", map(lambda x: x.modifier, self.modifiers))
+
