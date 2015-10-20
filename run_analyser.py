@@ -15,14 +15,14 @@ text = None
 
 for arg in sys.argv[1:]:
   if next_is_textfile:
-    text = file(arg).read() 
+    text = file(arg).read()
     next_is_textfile = False
   elif arg=="-debug":
-    debug = True 
+    debug = True
   elif arg == "-f":
-    next_is_textfile = True 
+    next_is_textfile = True
   elif not text:
-    text = arg 
+    text = arg
 
 sc = SpellChecker()
 #cl = DummyClassifier(sc)

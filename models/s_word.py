@@ -11,6 +11,9 @@ class SWord:
   def is_modifier(self):
     return self.modifier is not None
 
+  def is_neutral(self):
+    return self.has_polarity() and self.polarity==0
+
   def __str__(self):
     s = "\"%s\" %s: %.2f" % (self.word, "M" if self.is_modifier() else "P", self.modifier or self.polarity or 0)
     return s

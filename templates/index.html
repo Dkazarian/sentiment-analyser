@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <script type=text/javascript src="{{url_for('static', filename='jquery-1.11.3.min.js') }}"></script>
+    <title>Analizador semántico</title>
+  </head>
+  <body>
+    <div class="container" style="width: 25%; margin: 40px auto;">
+      <h1>Analizador semántico</h1>
+      <h2>Proyecto 2015, UTN FRBA</h2>
+      <h3>Alumnos: </h3>
+      <ul>
+        <li>Pablo Fernández</li>
+        <li>Daniela Kazarián</li>
+        <li>Aldana Laura Quintana Munilla</li>
+        <li>Ariel Umansky</li>
+      </ul>
+      <br>
+      <br>
+      <h2>Formulario de prueba</h2>
+      <br>
+      <input type="text" hidden="true" value="mongo" name="classifier" id="classifier">
+      <textarea name="sentence" id="sentence" cols="30" rows="10"></textarea>
+      <br>
+      <button id="analyse">Enviar</button>
+      <br>
+      <p id="result"></p>
+    </div>
+    <script>
+      $("#analyse").on("click", function(){
+        $("#result")[0].innerHTML = "";
+        var sentence = {
+          text: $("#sentence").val(),
+          user_info: ""
+        }
+
+        opts = {
+          sincr: "True",
+          classifier: $("#classifier").val(),
+          sentences: [sentence]
+        }
+
+        $.ajax({
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(opts),
+          dataType: 'json',
+          url: '/analyse',
+          success: function(e){
+            var polarity = e.results[0].result;
+            var result_str = (polarity > 0 ? "Positivo " : (polarity < 0 ? "Negativo " : "Neutral ")) + "("+ polarity+ ")"
+            $("#result")[0].innerHTML = result_str;
+          }
+        })
+      });
+    </script>
+  </body>
+</html>
