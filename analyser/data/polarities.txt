@@ -1,5 +1,8 @@
 mierda -1
 bonito 1
+bien 1
+genial 1
+buenísimo 1
 de 0
 que 0
 a 0
