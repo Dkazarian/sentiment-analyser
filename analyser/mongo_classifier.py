@@ -1,8 +1,11 @@
 from database_connection.s_words import SWords
 from models.s_word import SWord
+from word_classifier import WordClassifier
 
-class MongoClassifier(object):
-  def classify(self, word):
-    s_word = SWords.find_word(word.string.lower()) or SWords.find_word(word.lemma.lower()) or SWord(word.string.lower())
-    s_word.extra = word 
-    return s_word
+class MongoClassifier(WordClassifier):
+
+  def find_word(self, word_string):
+    return SWords.find_word(word_string)   
+
+  def new_word(self, word_string):
+    return SWord(word_string)

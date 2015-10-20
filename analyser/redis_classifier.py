@@ -1,9 +1,12 @@
 from database_connection.d_words import DWords
 from models.d_word import DWord
+from spell_checker.spell_checker import SpellChecker
+from word_classifier import WordClassifier
 
-class RedisClassifier(object):
-  def classify(self, word):
-    #Se usaria el corrector si no encuentra nada.
-    d_word = DWords.find_word(word.string.lower()) or DWords.find_word(word.lemma.lower()) or DWord(word.string.lower())
-    d_word.extra = word 
-    return d_word
+class RedisClassifier(WordClassifier):
+
+  def find_word(self, word_string):
+    return DWords.find_word(word_string)   
+
+  def new_word(self, word_string):
+    return DWord(word_string)

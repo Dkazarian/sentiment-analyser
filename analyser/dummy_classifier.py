@@ -1,15 +1,20 @@
 from models.s_word import SWord
-class DummyClassifier(object):
+from word_classifier import WordClassifier
 
-  def classify(self, word):
-    if word.lemma == "bueno" or word.lemma == "bonito":
-      word_data = SWord(word.string, polarity=1)
-    elif word.lemma == "malo":
-      word_data = SWord(word.string, polarity=-1)
-    elif word.string == "no":
-      word_data = SWord(word.string, modifier=-1)
-    elif word.string == "muy":
-      word_data = SWord(word.string, modifier=3)
-    else:
-      word_data = SWord(word.string, extra = word)
+class DummyClassifier(WordClassifier):
+
+  def find_word(self, word_string):
+    word_data = None
+
+    if word_string == "bueno" or word_string == "bonito":
+      word_data = SWord(word_string, polarity=1)
+    elif word_string == "malo":
+      word_data = SWord(word_string, polarity=-1)
+    elif word_string == "no":
+      word_data = SWord(word_string, modifier=-1)
+    elif word_string == "muy":
+      word_data = SWord(word_string, modifier=3)
     return word_data
+
+  def new_word(self, word_string):
+    return SWord(word_string)
