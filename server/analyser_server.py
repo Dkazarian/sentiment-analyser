@@ -29,8 +29,9 @@ def info():
 # {
 #   "classifier": ["redis"|"mongo"],
 #   "debug": ["True" | "False"],
-#   "sentences": list of sentences,
-#   "respond_to": url
+#   "sentences": [{"text": "the sentence to analyse", "user_info": "user relevant information"}],
+#   "respond_to": url,
+#   "sincr": ["True"] //blocks call
 # }
 def analyse():
   data = json.loads(json.dumps(request.get_json(force=True)))
@@ -40,6 +41,7 @@ def analyse():
   debug = data.get("debug") is not None
   sentences = data.get("sentences")
   url = data.get("respond_to")
+  sincr = data.get("sincr") or False
 
   opts = {
     "classifier": classifier or "redis" or "mongo",
@@ -50,14 +52,19 @@ def analyse():
 
   print opts
 
-  thr = threading.Thread(target=AnalyserTask.perform, kwargs=opts)
-  thr.start()
+  if sincr is False:
+    thr = threading.Thread(target=AnalyserTask.perform, kwargs=opts)
+    thr.start()
 
-  return jsonify(
-    info="Running with classifier: " +
-    opts["classifier"] + " and debug mode is " +
-    ("on" if opts["debug"] else "off") + "."
-  )
+    return jsonify(
+      info="Running with classifier: " +
+      opts["classifier"] + " and debug mode is " +
+      ("on" if opts["debug"] else "off") + "."
+    )
+  else:
+    return jsonify(
+      results=AnalyserTask.perform(**opts)
+    )
 
 if __name__ == "__main__":
   app.run(debug=True)

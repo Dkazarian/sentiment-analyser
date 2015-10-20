@@ -25,5 +25,5 @@ class AnalyserTask:
 
     if len(respond_to) > 0:
       requests.post(respond_to, headers={'Content-Type': 'application/json'}, data=json.dumps(results))
-
-    print results
+    else:
+      return results
