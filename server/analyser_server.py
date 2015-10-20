@@ -24,7 +24,14 @@ def info():
     ]
   )
 
+
 @app.route("/analyse", methods=['POST'])
+# {
+#   "classifier": ["redis"|"mongo"],
+#   "debug": ["True" | "False"],
+#   "sentences": list of sentences,
+#   "respond_to": url
+# }
 def analyse():
   data = json.loads(json.dumps(request.get_json(force=True)))
   classifier = data.get("classifier")
