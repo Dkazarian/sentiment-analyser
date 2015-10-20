@@ -1,7 +1,7 @@
 from analyser.mongo_classifier import MongoClassifier
 from analyser.redis_classifier import RedisClassifier
 from analyser.analyser import Analyser
-import requests
+from flask import request
 import json
 
 
