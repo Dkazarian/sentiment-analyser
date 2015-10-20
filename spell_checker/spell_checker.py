@@ -8,7 +8,8 @@ class SpellChecker:
   def __init__(self):
     self.NWORDS = collections.defaultdict(lambda: 1)
     self.alphabet = 'aábcdeéfghiíjklmnoópqrstuúvwxyz'
-
+    self.vocals = "aeiou"
+    self.tildes = "áéíóú"
 
   def train_with_occurrences(self, file_name):
     f = file(file_name)
@@ -48,7 +49,16 @@ class SpellChecker:
     transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
     replaces   = [a + c + b[1:] for a, b in splits for c in self.alphabet if b]
     inserts    = [a + c + b     for a, b in splits for c in self.alphabet]
-    return self.reject_by_rules(set(deletes + replaces + inserts))
+    return self.reject_by_rules(set(deletes + replaces + inserts)
+
+  #TODO: fix encoding?
+  def with_tildes(self, word):
+    tildes = []
+    for i in range(0, len(word)):
+      if word[i] in self.vocals:
+        word_with_tilde = word[:i]+self.tildes[self.vocals.index(word[i])]+word[(i+1):]
+        tildes.append(word_with_tilde) 
+    return tildes
 
   def known_edits2(self, word):
     return set(e2 for e1 in self.edits1(word) for e2 in self.edits1(e1) if DWords.find_word(e2))
