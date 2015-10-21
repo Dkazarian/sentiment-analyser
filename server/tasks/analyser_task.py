@@ -2,16 +2,18 @@ from analyser.mongo_classifier import MongoClassifier
 from analyser.redis_classifier import RedisClassifier
 from analyser.analyser import Analyser
 from flask import request
+from spell_checker.spell_checker import SpellChecker
 import json
 
 
 class AnalyserTask:
   @classmethod
-  def perform(self, classifier, debug, sentences, respond_to):
+  def perform(self, classifier, spellcheck, debug, sentences, respond_to):
+    sc = (spellcheck and SpellChecker()) or None
     if classifier == "redis":
-      cl = RedisClassifier()
+      cl = RedisClassifier(sc)
     else:
-      cl = MongoClassifier()
+      cl = MongoClassifier(sc)
 
     results = []
 

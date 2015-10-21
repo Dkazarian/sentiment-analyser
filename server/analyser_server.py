@@ -42,10 +42,11 @@ def analyse():
   sentences = data.get("sentences")
   url = data.get("respond_to")
   sincr = data.get("sincr") or False
-
+  spellcheck =  data.get("spellcheck") is not None
   opts = {
     "classifier": classifier or "redis" or "mongo",
     "debug": debug or False,
+    "spellcheck": spellcheck or False,
     "sentences": sentences or [],
     "respond_to": url or ""
   }

@@ -42,22 +42,23 @@ class SpellChecker:
     for word in model:
       DWords.insert_word(DWord(word, occurrences=model[word]))
 
-  #TODO: Agregar correción de tildes
   def edits1(self, word):
     splits     = [(word[:i], word[i:]) for i in range(len(word) + 1)]
     deletes    = [a + b[1:] for a, b in splits if b]
     transposes = [a + b[1] + b[0] + b[2:] for a, b in splits if len(b)>1]
     replaces   = [a + c + b[1:] for a, b in splits for c in self.alphabet if b]
     inserts    = [a + c + b     for a, b in splits for c in self.alphabet]
-    return self.reject_by_rules(set(deletes + replaces + inserts)
+    tildes     = self.with_tildes(word)
+    return self.reject_by_rules(set(deletes + replaces + inserts + tildes))
 
-  #TODO: fix encoding?
   def with_tildes(self, word):
     tildes = []
-    for i in range(0, len(word)):
-      if word[i] in self.vocals:
-        word_with_tilde = word[:i]+self.tildes[self.vocals.index(word[i])]+word[(i+1):]
-        tildes.append(word_with_tilde) 
+    if re.search("[%s]"%tildes, word) is None:
+      for i in range(0, len(word)):
+        if word[i] in self.vocals:
+          vocal_index = self.vocals.index(word[i])
+          word_with_tilde = word[:i]+self.tildes[vocal_index*2:(vocal_index*2+2)]+word[(i+1):]
+          tildes.append(word_with_tilde) 
     return tildes
 
   def known_edits2(self, word):
@@ -65,15 +66,18 @@ class SpellChecker:
 
   def known(self, words): return set(w for w1 in words for w in [DWords.find_word(w1)] if w)
 
-  def correct(self, word):
+  def correct(self, word, edits2=False):
     candidates = self.known([word])
     if(len(candidates) is 0):
       edits_1 = self.edits1(word)
-      candidates = self.known(edits_1) or self.known(self.edits2(edits_1)) or [DWord(word)]
+      candidates = self.known(edits_1) 
+      if edits2:
+        candidates = candidates or self.known(self.edits2(edits_1))
+      candidates = candidates or [DWord(word)]
     return max(candidates, key=lambda word: word.occurrences).word
 
   def edits2(self, edits_1):
-    return []#set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
+    return set(e2 for e1 in edits_1 for e2 in self.edits1(e1))
 
   def reject_by_rules(self, words):
     wrongs = ['mv', 'np', 'nb']

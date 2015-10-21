@@ -20,6 +20,7 @@
       <h2>Formulario de prueba</h2>
       <br>
       <input type="text" hidden="true" value="mongo" name="classifier" id="classifier">
+      <input type="text" hidden="true" value="1" name="spellcheck" id="spellcheck">
       <textarea name="sentence" id="sentence" cols="30" rows="10"></textarea>
       <br>
       <button id="analyse">Enviar</button>
@@ -37,6 +38,7 @@
         opts = {
           sincr: "True",
           classifier: $("#classifier").val(),
+          spellcheck: $("#spellcheck").val(),
           sentences: [sentence]
         }
 
