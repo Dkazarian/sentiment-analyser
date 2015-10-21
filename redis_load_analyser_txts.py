@@ -10,3 +10,6 @@ execfile( "redis_words_loader.py")
 
 sys.argv = [sys.executable, "-p", "analyser/data/polarities.txt"]
 execfile( "redis_words_loader.py")
+
+sys.argv = [sys.executable, "-p", "analyser/data/emojis.txt"]
+execfile( "redis_words_loader.py")

@@ -2,11 +2,11 @@
 <html>
   <head>
     <script type=text/javascript src="{{url_for('static', filename='jquery-1.11.3.min.js') }}"></script>
-    <title>Analizador semántico</title>
+    <title>Analizador de sentimiento</title>
   </head>
   <body>
     <div class="container" style="width: 25%; margin: 40px auto;">
-      <h1>Analizador semántico</h1>
+      <h1>Analizador de sentimiento</h1>
       <h2>Proyecto 2015, UTN FRBA</h2>
       <h3>Alumnos: </h3>
       <ul>
@@ -19,8 +19,9 @@
       <br>
       <h2>Formulario de prueba</h2>
       <br>
-      <input type="text" hidden="true" value="mongo" name="classifier" id="classifier">
+      <input type="text" hidden="true" value="redis" name="classifier" id="classifier">
       <input type="text" hidden="true" value="1" name="spellcheck" id="spellcheck">
+      <input type="text" hidden="true" value="1" name="debug" id="debug">
       <textarea name="sentence" id="sentence" cols="30" rows="10"></textarea>
       <br>
       <button id="analyse">Enviar</button>
@@ -29,6 +30,7 @@
     </div>
     <script>
       $("#analyse").on("click", function(){
+        $("#analyse").addClass("binded");
         $("#result")[0].innerHTML = "";
         var sentence = {
           text: $("#sentence").val(),
@@ -39,6 +41,7 @@
           sincr: "True",
           classifier: $("#classifier").val(),
           spellcheck: $("#spellcheck").val(),
+          debug: $("#debug").val(),
           sentences: [sentence]
         }
 

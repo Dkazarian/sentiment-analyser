@@ -10,3 +10,4 @@ poco 0.5
 bastante 2
 profundizará 2
 pierde -1
+re 2

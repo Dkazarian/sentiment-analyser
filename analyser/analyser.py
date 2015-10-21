@@ -32,6 +32,7 @@ class Analyser(object):
             elif s_word.is_neutral():
               neutral_skipped+=1
           elif s_word.is_modifier():
+            neutral_skipped = 0
             self.add_modifier(s_word)
           
           self.__log_step(s_word, sentence_value)     

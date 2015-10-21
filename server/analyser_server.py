@@ -56,11 +56,8 @@ def analyse():
   if sincr is False:
     thr = threading.Thread(target=AnalyserTask.perform, kwargs=opts)
     thr.start()
-
     return jsonify(
-      info="Running with classifier: " +
-      opts["classifier"] + " and debug mode is " +
-      ("on" if opts["debug"] else "off") + "."
+      info="Running with classifier: %s, spellcheck is %s and debug mode is %s." % ( opts["classifier"], ("on" if opts["spellcheck"] else "off"), ("on" if opts["debug"] else "off")) 
     )
   else:
     return jsonify(
