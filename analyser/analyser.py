@@ -10,6 +10,7 @@ class Analyser(object):
 
     def __init__(self, classifier, debug = False):
       self.classifier = classifier
+      self.MODIFIER_WINDOW = 5
       self.__log_setup(debug)
       return
 
@@ -21,16 +22,21 @@ class Analyser(object):
       for sentence in sentences:
         sentence_value = 0
         self.clear_modifiers()
-        
-        for s_word in sentence:  
+        neutral_skipped = 0
+        for s_word in sentence["words"]:  
           if s_word.has_polarity() and not self.ignore_word(s_word):
-            sentence_value += self.apply_modifiers(s_word)
-            self.clear_modifiers()           
+            if neutral_skipped > self.MODIFIER_WINDOW or not s_word.is_neutral():
+              sentence_value += self.apply_modifiers(s_word)
+              self.clear_modifiers() 
+              neutral_skipped = 0          
+            elif s_word.is_neutral():
+              neutral_skipped+=1
           elif s_word.is_modifier():
             self.add_modifier(s_word)
           
           self.__log_step(s_word, sentence_value)     
         text_value += sentence_value
+        self.logger.debug("\n\"%s\"", sentence["string"])
         self.logger.debug("\nTotal oración: %.2f\n\n", sentence_value)
       return text_value
 
@@ -41,12 +47,12 @@ class Analyser(object):
         sentence = []
         for p_word in p_sentence.words:
           sentence.append(self.classifier.classify(p_word))
-        sentences.append(sentence)
+        sentences.append({"words": sentence, "string": p_sentence.string})
 
       return sentences
 
     def ignore_word(self, s_word):
-      return s_word.is_neutral() #or (s_word.extra.chunk \
+      return False#s_word.is_neutral() #or (s_word.extra.chunk \
       #  and not s_word.extra.chunk.role == "OBJ" \
       #  and (s_word.extra.chunk.role == "SBJ" or s_word.extra.chunk.type == "NP"))
 
