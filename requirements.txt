@@ -3,3 +3,4 @@ Pattern==2.6
 pymongo==2.8
 xlrd
 redis
+requests
