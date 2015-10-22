@@ -220,7 +220,8 @@ vice 0
 comunista 0
 dijo 0
 modelo 0
-creo 0
+creo 0.25
+pienso 0.25
 sólo 0
 muchos 0
 irán 0
@@ -520,3 +521,10 @@ injusto -1
 felicidad 1
 denuncia 0.1
 forro -0.5
+LPM -0.75
+gamelote -0.5
+protesta -0.25
+luz 0.1
+pelotas -0.25
+cortes -0.2
+flores 0.5
