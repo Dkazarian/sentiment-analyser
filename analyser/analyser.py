@@ -5,12 +5,14 @@ from pattern.es import parsetree
 from math import fabs
 import logging
 import sys
+import os 
 
 class Analyser(object):
 
     def __init__(self, classifier, debug = False):
       self.classifier = classifier
       self.MODIFIER_WINDOW = 5
+      self.debug = debug
       self.__log_setup(debug)
       return
 
@@ -39,7 +41,11 @@ class Analyser(object):
         text_value += sentence_value
         self.logger.debug("\n\"%s\"", sentence["string"])
         self.logger.debug("\nTotal oración: %.2f\n\n", sentence_value)
-      return text_value
+        self.log_unknown_words(sentence["words"])
+        self.log_word_corrections(sentence["words"])
+      return round(text_value,2)
+
+   
 
     def parse(self, text):
       p_tree = parsetree(text, relations=True, lemmata=True)
@@ -108,3 +114,32 @@ class Analyser(object):
       except UnicodeEncodeError:
         self.logger.debug("Modificadores: %s", map(lambda x: x.modifier, self.modifiers))
 
+    def log_unknown_words(self, words):
+      f = self.debug and self.open_file_unless_limit("analyser/data/unknown_words.txt", "a", 1024*10)
+      if f is not None:  
+        with f:
+          for word in words:
+            if word.polarity is None and word.modifier is None:
+              try: 
+                f.write("\n" + word.word.lower().encode('utf-8'))
+              except UnicodeEncodeError:
+                continue
+
+    def log_word_corrections(self, words):
+      f = self.debug and self.open_file_unless_limit("analyser/data/corrected_words.txt", "a", 1024*10)
+      if f is not None:        
+        with f:
+          for word in words:
+            if word.word.lower()!=word.extra.string.lower():
+              try: 
+                f.write("\n%s %s" % ( word.extra.string.lower().encode('utf-8'), word.word.lower().encode('utf-8') ))
+              except UnicodeEncodeError:
+                continue
+
+    def open_file_with_limit(self, path, limit):
+      size = os.path.getsize(path) if os.path.isfile(path) else 0
+      mode = "a" if (size < limit) else "w"
+      return open(path, mode)
+
+    def open_file_unless_limit(self, path, mode, limit):
+      return open(path, mode) if  not os.path.isfile(path) or (os.path.getsize(path) < limit) else None
