@@ -1,4 +1,4 @@
-no -0.5
+no -0.7
 muy 2
 super 2
 tan 2

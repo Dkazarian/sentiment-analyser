@@ -14,6 +14,9 @@ class Analyser(object):
       self.MODIFIER_WINDOW = 5
       self.debug = debug
       self.__log_setup(debug)
+      self.CORRECTED_WORDS_FILE="analyser/data/unknown_words.txt"
+      self.UNKNOWN_WORDS_FILE="analyser/data/corrected_words.txt"
+      self.FILE_LIMITS = 100*1024
       return
 
     def process(self, text):
@@ -115,31 +118,28 @@ class Analyser(object):
         self.logger.debug("Modificadores: %s", map(lambda x: x.modifier, self.modifiers))
 
     def log_unknown_words(self, words):
-      f = self.debug and self.open_file_unless_limit("analyser/data/unknown_words.txt", "a", 1024*10)
-      if f is not None:  
-        with f:
-          for word in words:
-            if word.polarity is None and word.modifier is None:
-              try: 
-                f.write("\n" + word.word.lower().encode('utf-8'))
-              except UnicodeEncodeError:
-                continue
+      if not self.debug or self.size_limit_reached(self.CORRECTED_WORDS_FILE, self.FILE_LIMITS):
+        return
+
+      with open(self.CORRECTED_WORDS_FILE, "a") as f:
+        for word in words:
+          if word.polarity is None and word.modifier is None:
+            try: 
+              f.write("\n" + word.word.lower().encode('utf-8'))
+            except UnicodeEncodeError:
+              continue
 
     def log_word_corrections(self, words):
-      f = self.debug and self.open_file_unless_limit("analyser/data/corrected_words.txt", "a", 1024*10)
-      if f is not None:        
-        with f:
-          for word in words:
-            if word.word.lower()!=word.extra.string.lower():
-              try: 
-                f.write("\n%s %s" % ( word.extra.string.lower().encode('utf-8'), word.word.lower().encode('utf-8') ))
-              except UnicodeEncodeError:
-                continue
+      if not self.debug or self.size_limit_reached(self.UNKNOWN_WORDS_FILE, self.FILE_LIMITS):
+        return
+      with open(self.UNKNOWN_WORDS_FILE, "a") as f:
+        for word in words:
+          if word.word.lower()!=word.extra.string.lower():
+            try: 
+              f.write("\n%s %s" % ( word.extra.string.lower().encode('utf-8'), word.word.lower().encode('utf-8') ))
+            except UnicodeEncodeError:
+              continue
 
-    def open_file_with_limit(self, path, limit):
-      size = os.path.getsize(path) if os.path.isfile(path) else 0
-      mode = "a" if (size < limit) else "w"
-      return open(path, mode)
 
-    def open_file_unless_limit(self, path, mode, limit):
-      return open(path, mode) if  not os.path.isfile(path) or (os.path.getsize(path) < limit) else None
+    def size_limit_reached(self, path, limit):
+      return os.path.isfile(path) and (os.path.getsize(path) > limit)
