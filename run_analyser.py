@@ -6,7 +6,6 @@ import sys
 from analyser.analyser import Analyser
 from spell_checker.spell_checker import SpellChecker
 from analyser.dummy_classifier import DummyClassifier
-from analyser.mongo_classifier import MongoClassifier
 from analyser.redis_classifier import RedisClassifier
 
 next_is_textfile = False
@@ -27,7 +26,6 @@ for arg in sys.argv[1:]:
 sc = SpellChecker()
 #cl = DummyClassifier(sc)
 cl = RedisClassifier(sc)
-#cl = MongoClassifier(sc)
 an = Analyser(cl, debug)
 result = an.process(text)
 print "%s (%s)" % ("Positivo" if result > 0 else "Negativo" if result < 0 else "Neutro", result)

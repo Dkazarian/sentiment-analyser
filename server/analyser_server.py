@@ -27,7 +27,7 @@ def info():
 
 @app.route("/analyse", methods=['POST'])
 # {
-#   "classifier": ["redis"|"mongo"],
+#   "classifier": ["redis"],
 #   "debug": ["True" | "False"],
 #   "sentences": [{"text": "the sentence to analyse", "user_info": "user relevant information"}],
 #   "respond_to": url,
@@ -36,7 +36,7 @@ def info():
 def analyse():
   data = json.loads(json.dumps(request.get_json(force=True)))
   classifier = data.get("classifier")
-  if(classifier != None and classifier != "mongo" and classifier != "redis"):
+  if(classifier != None and classifier != "redis"):
     classifier = None
   debug = data.get("debug") is not None
   sentences = data.get("sentences")
@@ -44,7 +44,7 @@ def analyse():
   sincr = data.get("sincr") or False
   spellcheck =  data.get("spellcheck") is not None
   opts = {
-    "classifier": classifier or "redis" or "mongo",
+    "classifier": classifier or "redis",
     "debug": debug or False,
     "spellcheck": spellcheck or False,
     "sentences": sentences or [],

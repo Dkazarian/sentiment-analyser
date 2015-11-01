@@ -1,4 +1,4 @@
-from models.s_word import SWord
+from models.d_word import DWord
 from word_classifier import WordClassifier
 
 class DummyClassifier(WordClassifier):
@@ -7,14 +7,14 @@ class DummyClassifier(WordClassifier):
     word_data = None
 
     if word_string == "bueno" or word_string == "bonito":
-      word_data = SWord(word_string, polarity=1)
+      word_data = DWord(word_string, polarity=1)
     elif word_string == "malo":
-      word_data = SWord(word_string, polarity=-1)
+      word_data = DWord(word_string, polarity=-1)
     elif word_string == "no":
-      word_data = SWord(word_string, modifier=-1)
+      word_data = DWord(word_string, modifier=-1)
     elif word_string == "muy":
-      word_data = SWord(word_string, modifier=3)
+      word_data = DWord(word_string, modifier=3)
     return word_data
 
   def new_word(self, word_string):
-    return SWord(word_string)
+    return DWord(word_string)

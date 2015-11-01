@@ -1,4 +1,3 @@
-from analyser.mongo_classifier import MongoClassifier
 from analyser.redis_classifier import RedisClassifier
 from analyser.analyser import Analyser
 import requests
@@ -10,10 +9,7 @@ class AnalyserTask:
   @classmethod
   def perform(self, classifier, spellcheck, debug, sentences, respond_to):
     sc = (spellcheck and SpellChecker()) or None
-    if classifier == "redis":
-      cl = RedisClassifier(sc)
-    else:
-      cl = MongoClassifier(sc)
+    cl = RedisClassifier(sc)
 
     results = []
 

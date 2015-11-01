@@ -611,3 +611,5 @@ boca 0
 calma 0.5
 libres 0.5
 encantan 1
+gente 0
+aburrido -3
