@@ -268,7 +268,7 @@ muchacho 0
 repiten -1
 politicos -0.25
 argentina 0
-papa 0.25
+papa 0
 piensa 0
 massa 0
 profeta 0
@@ -611,5 +611,11 @@ boca 0
 calma 0.5
 libres 0.5
 encantan 1
-gente 0
-aburrido -3
+harto -2
+hartos -2
+mentiras -1
+maltratos 0.2
+sucia -0.5
+delirio -0.25
+desesperación -0.5
+traiciones -0.25
