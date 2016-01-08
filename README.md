@@ -37,6 +37,6 @@ Redis
 
 [How to Write a Spelling Corrector](http://norvig.com/spell-correct.html).
 
-Word values in [anew.txt](https://github.com/Dkazarian/sentiment-analyser/blob/master/analyser/data/anew.txt) values were calculated from [Spanish ANEW](http://www.uvm.edu/~pdodds/files/papers/others/2007/redondo2007a.pdf).
+Word values in [anew.txt](https://github.com/Dkazarian/sentiment-analyser/blob/master/analyser/data/anew.txt) values were calculated from [Spanish ANEW](http://www.uvm.edu/~pdodds/files/papers/others/2007/redondo2007a.pdf). They should be removed for commercial use.
 
 The usage of a scoring method opposed to a probabilistic one was inspired by [Basic Sentiment Analysis with Python]( http://fjavieralba.com/basic-sentiment-analysis-with-python.html).
